@@ -10,7 +10,14 @@ use flowsnet_platform_sdk::logger;
 #[no_mangle]
 #[tokio::main(flavor = "current_thread")]
 pub async fn on_deploy() {
-    let telegram_token = std::env::var("telegram_token").unwrap();
+    //let telegram_token = std::env::var("telegram_token").unwrap();
+    let telegram_token = match std::env::var("telegram_token") {
+        Ok(token) => token,
+        Err(_) => {
+            eprintln!("Error: telegram_token is not set. Go to the Setting tab of your Flow to set it as a key/value pair: name `telegram_token` and value the actual token.");
+            return; // or handle the error appropriately
+        }
+    };
     listen_to_update(telegram_token).await;
 }
 
